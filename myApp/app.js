@@ -68,7 +68,7 @@ app.get('/registration',function(req,res){
      return res.redirect('registration');
   }else{
     const hashedPsw = await bcrypt.hash(password, 12);
-    db.collection("users").insertOne({username:username ,password:hashedPsw,wantToGo:[]});
+    db.collection("users").insertOne({username:username ,password:hashedPsw,wantToGo:[],sessionID:""});
     res.redirect('/'); 
   }
  });
@@ -86,8 +86,10 @@ app.post('/',async(req,res)=>{
     if(!passMatch){
       return res.redirect('/');
     }else{
-      db.collection("users").updateOne({username: username},{$push: { wantToGo: "habebe" }})
+      db.collection("users").updateOne({username: username},{$push: { wantToGo: "habebe" }});
       req.session.isAuth = true;
+      console.log(req.sessionID);
+      db.collection("users").updateOne({usernam:username},{$set:{sessionID:"ok"}});
       res.render('home');
     }
   }
@@ -128,9 +130,12 @@ app.post('/search',isAuth, (req, res) => {
   res.render('searchresults');
 });
 app.get('/add',isAuth, (req, res) => {
- //res.render('wanttogo');
  console.log(req.url.split("?").pop()); 
+ var country=req.url.split("?").pop();
+ console.log();
+//db.collection("users").find({username:username})
   alert("added");
+  res.redirect(country);
 });
 
 app.listen(4000);
