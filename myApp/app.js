@@ -2,6 +2,7 @@ var express = require('express');
 var bcrypt = require('bcryptjs'); 
 var path = require('path');
 var app = express();
+var alert= require('alert');
 
 //mongoDB connection
 var db;
@@ -129,7 +130,7 @@ app.post('/search',isAuth, (req, res) => {
 app.get('/add',isAuth, (req, res) => {
  //res.render('wanttogo');
  console.log(req.url.split("?").pop()); 
- window.alert("added");
+  alert("added");
 });
 
 app.listen(4000);
