@@ -126,9 +126,10 @@ app.get('/santorini',isAuth, (req, res) => {
 app.post('/search',isAuth, (req, res) => {
   res.render('searchresults');
 });
-app.get('/endpoint',isAuth, (req, res) => {
-  res.render('wanttogo');
-  console.log(req.url.split("?"));
+app.get('/add',isAuth, (req, res) => {
+ //res.render('wanttogo');
+ console.log(req.url.split("?").pop()); 
+ window.alert("added");
 });
 
 app.listen(4000);
