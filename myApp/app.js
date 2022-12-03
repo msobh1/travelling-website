@@ -3,6 +3,7 @@ var bcrypt = require('bcryptjs');
 var path = require('path');
 var app = express();
 var alert= require('alert');
+var session;
 
 //mongoDB connection
 var db;
@@ -36,11 +37,10 @@ app.use(session({
 );
 
 const isAuth=(req,res,next)=>{
-  if(req.session.isAuth){
+  if(session.username){
     next();
   }else{
-    res.redirect('/');
-  }
+    res.redirect('/');}
 }
 
 // view engine setup
@@ -49,14 +49,21 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/',function(req,res){
- res.render('login')
+  session=req.session;
+  if(session.username){
+    res.render('home');
+  }else{
+ res.render('login');}
 });
 app.get('/registration',function(req,res){
-  res.render('registration')
+  if(session.username){
+    res.render('home');
+  }else{
+ res.render('registration');}
  });
  
  //registeration
@@ -68,7 +75,7 @@ app.get('/registration',function(req,res){
      return res.redirect('registration');
   }else{
     const hashedPsw = await bcrypt.hash(password, 12);
-    db.collection("users").insertOne({username:username ,password:hashedPsw,wantToGo:[],sessionID:""});
+    db.collection("users").insertOne({username:username ,password:hashedPsw,wantToGo:[]});
     res.redirect('/'); 
   }
  });
@@ -86,10 +93,9 @@ app.post('/',async(req,res)=>{
     if(!passMatch){
       return res.redirect('/');
     }else{
-      db.collection("users").updateOne({username: username},{$push: { wantToGo: "habebe" }});
-      req.session.isAuth = true;
-      console.log(req.sessionID);
-      db.collection("users").updateOne({usernam:username},{$set:{sessionID:"ok"}});
+      session=req.session;
+      session.username=req.body.username;
+      console.log(req.session);
       res.render('home');
     }
   }
@@ -129,12 +135,15 @@ app.get('/santorini',isAuth, (req, res) => {
 app.post('/search',isAuth, (req, res) => {
   res.render('searchresults');
 });
-app.get('/add',isAuth, (req, res) => {
- console.log(req.url.split("?").pop()); 
+app.get('/add',isAuth, async (req, res) => {
  var country=req.url.split("?").pop();
- console.log();
-//db.collection("users").find({username:username})
+ var coun=await db.collection("users").findOne({username: req.session.username},{wantToGo:{$elemMatch:{country}}});
+ if(coun){
+ alert("added before");
+ }else{
+  db.collection("users").updateOne({username: req.session.username},{$push: { wantToGo: country }});
   alert("added");
+ }
   res.redirect(country);
 });
 
