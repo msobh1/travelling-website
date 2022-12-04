@@ -70,6 +70,7 @@ app.get('/registration',function(req,res){
  app.post('/register',async(req,res)=>{
   var username =req.body.username;
   var password =req.body.password;
+  if(username.length!=0 &&password.length!=0 ){
   var user=await db.collection("users").findOne({username});
   if(user){
      return res.redirect('registration');
@@ -77,6 +78,9 @@ app.get('/registration',function(req,res){
     const hashedPsw = await bcrypt.hash(password, 12);
     db.collection("users").insertOne({username:username ,password:hashedPsw,wantToGo:[]});
     res.redirect('/'); 
+  }}else{
+    alert("habebe");
+    res.redirect('registration');
   }
  });
  
@@ -110,8 +114,10 @@ app.get('/cities',isAuth, (req, res) => {
 app.get('/islands',isAuth, (req, res) => {
   res.render('islands');
 });
-app.get('/wanttogo',isAuth, (req, res) => {
-  res.render('wanttogo');
+app.get('/wanttogo',isAuth, async (req, res) => {
+  var user=await db.collection("users").findOne({username: req.session.username});
+  var countries=user.wantToGo;
+  res.render('wanttogo',{countries});
 });
 app.get('/inca',isAuth, (req, res) => {
   res.render('inca');
@@ -137,8 +143,9 @@ app.post('/search',isAuth, (req, res) => {
 });
 app.get('/add',isAuth, async (req, res) => {
  var country=req.url.split("?").pop();
- var coun=await db.collection("users").findOne({username: req.session.username},{wantToGo:{$elemMatch:{country}}});
- if(coun){
+ var user=await db.collection("users").findOne({username: req.session.username});
+ var countries=user.wantToGo;
+ if(countries.includes(country)){
  alert("added before");
  }else{
   db.collection("users").updateOne({username: req.session.username},{$push: { wantToGo: country }});

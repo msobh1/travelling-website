@@ -13,6 +13,12 @@
             text-align: center;
             -webkit-text-stroke: 1px blue;
         }
+        .countries{
+            position: fixed;
+            color: darkorange;
+            left: 30px;
+            top: 70px;
+        }
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,6 +43,15 @@
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
+         <div class ="countries">
+         </div>
     </nav>
+    <div class = "countries">
+        <% if (countries. length > 0) { %>
+            <% countries.forEach(countries => {%>
+                <h2><%= countries %></h2>
+            <%})%>
+            <%}%>
+    </div>
 </body>
 </html>
