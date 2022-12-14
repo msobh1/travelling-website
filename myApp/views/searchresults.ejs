@@ -13,6 +13,12 @@
             text-align: center;
             -webkit-text-stroke: 1px blue;
         }
+        .results{
+            position: fixed;
+            color: darkorange;
+            left: 30px;
+            top: 70px;
+        }
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,5 +44,15 @@
             </form>
         </div>
     </nav>
+    <div class = "results">
+        <% if (results. length > 0) { %>
+            <% results.forEach(results => {%>
+                <button id="res" class="btn btn-secondary ml-3">
+                    <a href="res?<%= results %>"><%= results %></a>
+            <%})%>
+            <%}else{%>
+                <p>Destination not found</p>
+                <%}%>
+    </div>
 </body>
 </html>
