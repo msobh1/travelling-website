@@ -190,8 +190,11 @@ app.get('/res',isAuth,(req,res)=>{
   res.redirect(country);
 });
 
+app.get('/search',isAuth, (req, res) => {
+  res.render('searchresults');
+});
+
 app.get('/logout',isAuth, (req, res) => {
   res.render('/');
 });
-
 app.listen(4000);
