@@ -3,7 +3,14 @@ var bcrypt = require('bcryptjs');
 var path = require('path');
 var app = express();
 var alert= require('alert');
-var session;
+
+// view engine setup
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 //mongoDB connection
 var db;
@@ -32,7 +39,7 @@ app.use(session({
    resave:false,
    saveUninitialized: false,
    cookie: {expires:(3 * 86400 * 1000)},
-   store: store 
+   store: store,
  })
 );
 
@@ -43,14 +50,7 @@ const isAuth=(req,res,next)=>{
     res.redirect('/');}
 }
 
-// view engine setup
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
  
  //registeration
 
@@ -194,7 +194,11 @@ app.get('/search',isAuth, (req, res) => {
   res.render('searchresults');
 });
 
-app.get('/logout',isAuth, (req, res) => {
-  res.render('/');
+//logout
+
+app.get('/logout',(req, res) => {
+  req.session.destroy();
+  res.redirect('/');
 });
+
 app.listen(4000);

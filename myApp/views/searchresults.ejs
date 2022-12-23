@@ -47,8 +47,7 @@
     <div class = "results">
         <% if (results. length > 0) { %>
             <% results.forEach(results => {%>
-                <button id="res" class="btn btn-secondary ml-3">
-                    <a href="res?<%= results %>"><%= results %></a>
+             <button onclick="location.href = '/res?<%= results %>';" id="res" class="btn btn-secondary ml-3"><%= results %></a></button>
             <%})%>
             <%}else{%>
                 <p>Destination not found</p>
