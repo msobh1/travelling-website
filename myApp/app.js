@@ -16,7 +16,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 var db;
 const { MongoClient } = require("mongodb");
 const uri = "mongodb://localhost:27017";
-const databaseName = "MyDB";
+const databaseName = "myDB";
 MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
   if (error) {
     return console.log("Connection failed");
@@ -27,11 +27,11 @@ MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
 //session 
 var session= require('express-session');
 var MongoDBSession=require('connect-mongodb-session')(session);
-var mongoURI= "mongodb://localhost:27017/MyDB";
+var mongoURI= "mongodb://localhost:27017/myDB";
 
 var store =new MongoDBSession({
    uri: mongoURI,
-   collection: 'session'
+   collection: 'myCollection'
 }); 
 
 app.use(session({
@@ -58,13 +58,13 @@ const isAuth=(req,res,next)=>{
   var username =req.body.username;
   var password =req.body.password;
   if(username.length!=0 &&password.length!=0 ){
-  var user=await db.collection("users").findOne({username});
+  var user=await db.collection("myCollection").findOne({username});
   if(user){
     alert("username already exist");
      return res.redirect('registration');
   }else{
     const hashedPsw = await bcrypt.hash(password, 12);
-    db.collection("users").insertOne({username:username ,password:hashedPsw,wantToGo:[]});
+    db.collection("myCollection").insertOne({username:username ,password:hashedPsw,wantToGo:[]});
     res.redirect('/'); 
   }}else{
     alert("please enter username and password");
@@ -87,7 +87,7 @@ app.post('/',async(req,res)=>{
       res.redirect('/');
     }
   }else{
-  var user=await db.collection("users").findOne({username});
+  var user=await db.collection("myCollection").findOne({username});
   if(!user){
     alert("username not found");
     return res.redirect('/');
@@ -139,7 +139,7 @@ app.get('/islands',isAuth, (req, res) => {
 });
 
 app.get('/wanttogo',isAuth, async (req, res) => {
-  var user=await db.collection("users").findOne({username: req.session.username});
+  var user=await db.collection("myCollection").findOne({username: req.session.username});
   var countries=user.wantToGo;
   res.render('wanttogo',{countries});
 });
@@ -184,12 +184,12 @@ app.post('/search',isAuth, (req, res) => {
 
 app.get('/add',isAuth, async (req, res) => {
  var country=req.url.split("?").pop();
- var user=await db.collection("users").findOne({username: req.session.username});
+ var user=await db.collection("myCollection").findOne({username: req.session.username});
  var countries=user.wantToGo;
  if(countries.includes(country)){
  alert("added before");
  }else{
-  db.collection("users").updateOne({username: req.session.username},{$push: { wantToGo: country }});
+  db.collection("myCollection").updateOne({username: req.session.username},{$push: { wantToGo: country }});
   alert("added");
  }
   res.redirect(country);
