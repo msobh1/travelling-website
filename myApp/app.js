@@ -206,6 +206,7 @@ app.get('/search',isAuth, (req, res) => {
 //logout
 
 app.get('/logout',(req, res) => {
+  adminusername=false;
   req.session.destroy();
   res.redirect('/');
 });
