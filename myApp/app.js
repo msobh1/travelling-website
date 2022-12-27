@@ -3,6 +3,7 @@ var bcrypt = require('bcryptjs');
 var path = require('path');
 var app = express();
 var alert= require('alert');
+const PORT = process.env.PORT || 4000;
 
 // view engine setup
 
@@ -211,4 +212,6 @@ app.get('/logout',(req, res) => {
   res.redirect('/');
 });
 
-app.listen(4000);
+app.listen(PORT, () => {
+  console.log(`server started on port ${PORT}`);
+});
