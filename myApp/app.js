@@ -4,6 +4,7 @@ var path = require('path');
 var app = express();
 var alert= require('alert');
 const PORT = process.env.PORT || 4000;
+var adminusername=false;
 
 // view engine setup
 
@@ -45,14 +46,12 @@ app.use(session({
 );
 
 const isAuth=(req,res,next)=>{
-  if(session.username){
+  if(session.username || adminusername ){
     next();
   }else{
     res.redirect('/');}
 }
 
-
- 
  //registeration
 
  app.post('/register',async(req,res)=>{
@@ -80,6 +79,7 @@ app.post('/',async(req,res)=>{
   var password =req.body.password;
   if(username=="admin"){
     if(password=="admin"){
+      adminusername=true;
       res.render('home');
     }else{
       alert("wrong password");
