@@ -80,8 +80,6 @@ app.post('/',async(req,res)=>{
   var password =req.body.password;
   if(username=="admin"){
     if(password=="admin"){
-      session=req.session;
-      session.username=req.body.username;
       res.render('home');
     }else{
       alert("wrong password");
