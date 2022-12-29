@@ -4,7 +4,6 @@ var path = require('path');
 var app = express();
 var alert= require('alert');
 const PORT = process.env.PORT || 4000;
-var adminusername=false;
 
 // view engine setup
 
@@ -41,12 +40,12 @@ app.use(session({
    resave:false,
    saveUninitialized: false,
    cookie: {expires:(3 * 86400 * 1000)},
-   store: store,
  })
 );
 
+
 const isAuth=(req,res,next)=>{
-  if(session.username || adminusername ){
+  if(session.username){
     next();
   }else{
     res.redirect('/');}
@@ -79,7 +78,8 @@ app.post('/',async(req,res)=>{
   var password =req.body.password;
   if(username=="admin"){
     if(password=="admin"){
-      adminusername=true;
+      session=req.session;
+      session.username=req.body.username;
       res.render('home');
     }else{
       alert("wrong password");
@@ -206,7 +206,6 @@ app.get('/search',isAuth, (req, res) => {
 //logout
 
 app.get('/logout',(req, res) => {
-  adminusername=false;
   req.session.destroy();
   res.redirect('/');
 });
