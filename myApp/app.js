@@ -40,7 +40,8 @@ app.use(session({
    secret: 'secret',
    resave:false,
    saveUninitialized: false,
-   cookie: {expires:(3 * 86400 * 1000)}
+   cookie: {expires:(3 * 86400 * 1000)},
+   store:store
  })
 );
 
