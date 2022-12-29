@@ -27,6 +27,7 @@ MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
 });
 //session 
 var session= require('express-session');
+const { MemoryStore } = require('express-session');
 var MongoDBSession=require('connect-mongodb-session')(session);
 var mongoURI= "mongodb://localhost:27017/myDB";
 
@@ -39,7 +40,7 @@ app.use(session({
    secret: 'secret',
    resave:false,
    saveUninitialized: false,
-   cookie: {expires:(3 * 86400 * 1000)},
+   cookie: {expires:(3 * 86400 * 1000)}
  })
 );
 
